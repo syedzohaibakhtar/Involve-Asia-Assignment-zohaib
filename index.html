@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+        <style>
+           .box {
+                background-color: rgba(211,211,211);
+            }
+            .modal-background {
+                opacity: 50%;
+            }
+        </style>
+
+        <title>Vue App</title>
+    </head>
+
+    <body>
+        <div id="app">
+            <article>
+                <section class="section">
+                    <div class="container">
+                        <div class="content has-text-centered">
+                            <p>Click on Modal Button</p>
+                            <p class="control">
+                                <button v-on:click="launch" class="button is-primary">Launch modal</button>
+                            </p>
+                            <p>Involve Asia -Front End Development Assignment</p>
+                            <p>Syed Zohaib Akhtar</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="modal" v-bind:class="{'is-active':isActive}">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Add Revenue Group</p>
+                            <button @click="close" class="delete" aria-label="close"></button>
+                        </header>
+                        <section class="modal-card-body">
+                            <div class="container">
+                                <p class="subtitle">
+                                    Revenue Group Title
+                                </p>
+                                <div class="field">
+                                    <div class="control">
+                                        <input class="input is-small" type="text" placeholder="Fashion - 15%">
+                                    </div>
+                                </div>
+                                <div class="columns">
+                                    <div class="column is-1"><p>if</p></div>
+                                    <div class="column is-3">
+                                        <div class="select is-small">
+                                            <select>
+                                                <option>ALL</option>
+                                                <option>With options</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="column"><p>of the below conditions are met</p></div>
+                                </div>
+                                <div class="columns box" v-for="(input,k) in inputs" :key="k">
+                                    <div class="column is-2">
+                                        <div class="select is-small">
+                                            <select>
+                                                <option>aff_sub</option>
+                                                <option>With options</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="column is-2">
+                                        <div class="select is-small">
+                                            <select>
+                                                <option>is</option>
+                                                <option>With options</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="column is-6">
+                                        <div class="field has-addons" 
+                                            v-for="(paramRule,index) in input.paramRules" :key="index">
+                                            <div class="control">
+                                                <input class="input is-small" type="text" 
+                                                    placeholder="insert parameter">
+                                            </div>
+                                            <div class="control">
+                                                <a class="button is-small" @click="removeParam(k,index)" 
+                                                    v-show="index || ( !index && input.paramRules.length > 1)">Remove</a>
+                                            </div>
+                                            <div class="control">
+                                                <a class="button is-small" @click="addParam(k)" >Add</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column is-1">
+                                        <p class="control">
+                                            <a class="button is-small" @click="add(k)" v-show="k == inputs.length-1">
+                                                <span class="icon">
+                                                    <i class="fa fa-plus-circle"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="column is-1">
+                                        <p class="control">
+                                            <a class="button is-small" @click="remove(k)" v-show="k || !k">
+                                                <span class="icon">
+                                                    <i class="fa fa-minus-circle"></i>
+                                                </span>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="columns">
+                                <div class="column is-3"><p>then revenue is</p></div>
+                                <div class="column is-4">
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input class="input is-small" type="number" value="15">
+                                        <span class="icon is-right">
+                                          <i class="fas fa-percent"></i>
+                                        </span>
+                                      </div>
+                                </div>
+                                </div>
+                            </div>
+                        </section>
+                        <footer class="modal-card-foot">
+                            <button class="button is-small is-success">Confirm</button>
+                            <button @click="close" class="button is-small">Cancel</button>
+                        </footer>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <script>
+            const App = new Vue({
+                el: '#app',
+                data: {
+                    inputs: [{
+                        aff: 'abc',
+                        is: '',
+                        paramRules: [{
+                            name: '',
+                        }],
+                    }],
+                    isActive: false,
+                },
+                methods: {
+                    addParam (index){
+                        this.inputs[index].paramRules.push({name:''});
+                    },
+                    removeParam (mindex,index) {
+                        this.inputs[mindex].paramRules.splice(index, 1)
+                    },
+                    add () {
+                        this.inputs.push({aff: '', is: '',paramRules:[{name:''}]});
+                    },
+                    remove (index) {
+                        this.inputs.splice(index, 1)
+                    },
+                    launch: function() {
+                        this.isActive = true;
+                    },
+                    close: function() {
+                        this.isActive = false;
+                    },
+                }
+            })
+        </script>
+    </body>
+</html>
